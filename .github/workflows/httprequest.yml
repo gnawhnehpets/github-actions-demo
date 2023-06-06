@@ -20,8 +20,8 @@ jobs:
             run: |
                 echo 'response: ${{ steps.find-one.outputs.response }}'
                 echo 'header: ${{ steps.find-one.outputs.headers }}'
-                echo 'email: ${{ steps.find-one.outputs.response.email}}'
-# echo ${{ fromJson(steps.find-one.outputs.response).email}}
+                echo 'email: ${{ steps.find-one.outputs.response.document.email}}'
+                echo 'email2: ${{ fromJson(steps.find-one.outputs.response.document).email}}'
 
     confirm-response:
         needs: prepare-response

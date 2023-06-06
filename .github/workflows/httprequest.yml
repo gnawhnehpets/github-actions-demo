@@ -21,21 +21,21 @@ jobs:
                 echo 'response: ${{ steps.find-one.outputs.response }}'
                 echo 'header: ${{ steps.find-one.outputs.headers }}'
                 echo 'email: ${{ steps.find-one.outputs.response.document.email}}'
-                echo 'email2: ${{ fromJson(steps.find-one.outputs.response.document).email}}'
+                echo 'email2: ${{ fromJson(steps.find-one.outputs.response).document.email}}'
 
-    confirm-response:
-        needs: prepare-response
-        runs-on: ubuntu-latest
-        strategy:
-            matrix:
-                file: ${{ fromJson(needs.prepare-response.outputs.response-made) }}
-        steps:
-        -   name: Checkout
-            uses: actions/checkout@v3
+    # confirm-response:
+    #     needs: prepare-response
+    #     runs-on: ubuntu-latest
+    #     strategy:
+    #         matrix:
+    #             file: ${{ fromJson(needs.prepare-response.outputs.response-made) }}
+    #     steps:
+    #     -   name: Checkout
+    #         uses: actions/checkout@v3
         
-        -   name: Echo file
-            run: |
-                echo ${{ matrix.file }} # to test if the correct file was passed
+    #     -   name: Echo file
+    #         run: |
+    #             echo ${{ matrix.file }} # to test if the correct file was passed
 
 # jobs:
 #     deployment:

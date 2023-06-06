@@ -1,0 +1,79 @@
+name: Atlas POST via http request
+on: push
+# jobs:
+#     deployment:
+#       runs-on: ubuntu-latest
+#       steps:
+#       - name: Deploy Stage
+#         uses: fjogeleit/http-request-action@v1
+#         with:
+#           url: 'https://data.mongodb-api.com/app/data-qbtmk/endpoint/data/v1/action/findOne'
+#           method: 'POST'
+#           username: ${{ secrets.AWX_USER }}
+#           password: ${{ secrets.AWX_PASSWORD }}
+#           customHeaders: '{"Content-Type": "application/json"}'
+#           data: '{"key_1": "value_1", "key_2": "value_2"}'
+
+# jobs:
+#     deployment:
+#       runs-on: ubuntu-latest
+#       steps:
+#       - name: Deploy Stage
+#         uses: fjogeleit/http-request-action@v1
+#         with:
+#           url: 'https://data.mongodb-api.com/app/data-qbtmk/endpoint/data/v1/action/findOne'
+#           method: 'POST'
+#           username: ${{ secrets.AWX_USER }}
+#           password: ${{ secrets.AWX_PASSWORD }}
+#           customHeaders: '{"Content-Type": "application/json", "Access-Control-Request-Headers": "*", "api-key": "ss4YLpyU2RNqHXP00VxIlwi9nMJpxLGC0E1FCmlBgFclysZyTwgxx3jipuG0pdqJ", "Accept": "application/ejson"}'
+#           data: '{ "collection":"devstudio", "database":"fiserv", "dataSource":"sandbox", "projection": {"_id": 1}}'
+
+jobs:
+    # prepare-files:
+    #     runs-on: ubuntu-latest
+    #     outputs:
+    #       matrix-added: ${{ steps.file-changes.outputs.files_added }}
+    #       matrix-modified: ${{ steps.file-changes.outputs.files_modified }}
+    #     steps:
+    #       - id: file-changes
+    #         uses: trilom/file-changes-action@v1.2.4
+
+    prepare-response:
+        runs-on: ubuntu-latest
+        outputs:
+            response-made: ${{ steps.find-one.outputs.response}}
+        steps:
+        -   name: Find one
+            id: find-one 
+            uses: fjogeleit/http-request-action@v1
+            with:
+            url: 'https://data.mongodb-api.com/app/data-qbtmk/endpoint/data/v1/action/findOne'
+            method: 'POST'
+            customHeaders: '{"Content-Type": "application/json", "Access-Control-Request-Headers": "*", "api-key": "ss4YLpyU2RNqHXP00VxIlwi9nMJpxLGC0E1FCmlBgFclysZyTwgxx3jipuG0pdqJ", "Accept": "application/ejson"}'
+            data: '{ "collection":"devstudio", "database":"fiserv", "dataSource":"sandbox", "projection": {"_id": 1}}'
+
+    confirm-response:
+        needs: prepare-response
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                file: ${{ fromJSON(needs.prepare-response.outputs.response-made) }}
+        steps:
+        -   name: Checkout
+            uses: actions/checkout@v3
+        
+        -   name: Echo file
+            run: |
+                echo ${{ matrix.file }} # to test if the correct file was passed
+
+# curl --location --request POST 'https://data.mongodb-api.com/app/data-qbtmk/endpoint/data/v1/action/findOne' \
+# --header 'Content-Type: application/json' \
+# --header 'Access-Control-Request-Headers: *' \
+# --header 'api-key: ss4YLpyU2RNqHXP00VxIlwi9nMJpxLGC0E1FCmlBgFclysZyTwgxx3jipuG0pdqJ' \
+# --data-raw '{
+#     "collection":"devstudio",
+#     "database":"fiserv",
+#     "dataSource":"sandbox",
+#     "projection": {"_id": 1}
+# }'
+          

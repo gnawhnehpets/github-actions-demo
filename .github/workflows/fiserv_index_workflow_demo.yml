@@ -22,6 +22,7 @@ jobs:
   # prepare data about added and modified files using the file-changes-action
   # run a matrix based on the previous job output and call an external API endpoint using the http-request-action and passing values from the matrix.
   # https://github.com/marketplace/actions/file-changes-action
+  # https://github.com/trilom/file-changes-action
 
   prepare-files:
     runs-on: ubuntu-latest

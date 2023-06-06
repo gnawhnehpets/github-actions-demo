@@ -12,7 +12,10 @@ jobs:
             with:
                 url: 'https://data.mongodb-api.com/app/data-qbtmk/endpoint/data/v1/action/findOne'
                 method: 'POST'
-                customHeaders: '{"Content-Type": "application/json", "Access-Control-Request-Headers": "*", "api-key": "ss4YLpyU2RNqHXP00VxIlwi9nMJpxLGC0E1FCmlBgFclysZyTwgxx3jipuG0pdqJ"'
+                customHeaders: |
+                    '{"Content-Type": "application/json", 
+                    "Access-Control-Request-Headers": "*", 
+                    "api-key": "ss4YLpyU2RNqHXP00VxIlwi9nMJpxLGC0E1FCmlBgFclysZyTwgxx3jipuG0pdqJ"}'
                 data: '{ "collection":"devstudio", "database":"fiserv", "dataSource":"sandbox", "projection": {"_id": 1}}'
 
     confirm-response:

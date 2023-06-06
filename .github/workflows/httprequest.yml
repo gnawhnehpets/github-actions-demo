@@ -15,19 +15,19 @@ jobs:
                 url: 'https://data.mongodb-api.com/app/data-qbtmk/endpoint/data/v1/action/findOne'
                 method: 'POST'
                 customHeaders: '{"Content-Type": "application/json", "Access-Control-Request-Headers": "*", "api-key": "ss4YLpyU2RNqHXP00VxIlwi9nMJpxLGC0E1FCmlBgFclysZyTwgxx3jipuG0pdqJ"}'
-                data: '{ "collection":"devstudio", "database":"fiserv", "dataSource":"sandbox", "projection": {"_id": 1}}'
+                data: '{ "collection":"evault", "database":"fiserv", "dataSource":"sandbox", "projection": {"_id": 1}}'
         -   name: Show Response
             run: |
                 echo ${{ steps.find-one.outputs.response }}
                 echo ${{ steps.find-one.outputs.headers }}
-                echo ${{ fromJson(steps.find-one.outputs.response).email }}
+                echo ${{ fromJson(steps.find-one.outputs.response).email}}
 
     confirm-response:
         needs: prepare-response
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                file: ${{ fromJSON(needs.prepare-response.outputs.response-made) }}
+                file: ${{ fromJson(needs.prepare-response.outputs.response-made) }}
         steps:
         -   name: Checkout
             uses: actions/checkout@v3
@@ -35,6 +35,7 @@ jobs:
         -   name: Echo file
             run: |
                 echo ${{ matrix.file }} # to test if the correct file was passed
+
 # jobs:
 #     deployment:
 #       runs-on: ubuntu-latest

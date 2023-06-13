@@ -13,7 +13,7 @@ jobs:
             with:
                 # file: './action.yml'          # File to read from
                 # key-path: '["runs", "using"]' # Access the runs key then the using key and retuns the value.
-                file: './api-1.0.yml'
+                file: './fiserv/reference/api-1.0.yml'
                 key-path: '["components"]' # Access the runs key then the using key and retuns the value.
 
         -   name: Display read-yaml output

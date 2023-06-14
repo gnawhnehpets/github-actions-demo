@@ -7,6 +7,10 @@ jobs:
     steps:
         -   uses: actions/checkout@v1
 
+        -   name: List files in the repository
+            run: |
+                ls ${{ github.workspace }}
+
         -   name: Run read-yaml action
             id: yaml-data
             uses: jbutcher5/read-yaml@main      # You may wish to replace main with a version tag such as '1.6' etc.

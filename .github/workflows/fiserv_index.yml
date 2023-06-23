@@ -1,0 +1,178 @@
+# This is a basic workflow to help you get started with Actions
+
+name: fiserv digest auth 
+
+# Controls when the workflow will run
+# https://docs.github.com/en/actions/using-workflows/events-that-trigger-workflows
+on:
+  # Triggers the workflow on push or pull request events but only for the "master" branch
+  push:
+    branches: [ "master", "dev", "stage", "prod" ]
+  # pull_request:
+  #  branches: [ "master" ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+
+jobs:
+  # Potential workflow: https://stackoverflow.com/questions/74854189/call-external-rest-api-when-a-file-is-added-or-updated-to-a-github-repository
+  # trigger on files push (including paths and branches filter)
+  # prepare data about added and modified files using the file-changes-action
+  # run a matrix based on the previous job output and call an external API endpoint using the http-request-action and passing values from the matrix.
+  # https://github.com/marketplace/actions/file-changes-action
+  # https://github.com/trilom/file-changes-action
+
+
+# curl --request PUT \
+# --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+# --header 'content-type: application/json' \
+# --url https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.inputs.pr_num }}/merge \
+# --data '{
+# "merge_method": "squash",
+# "commit_title": "Squash and Merge for Pull Request ${{ github.event.inputs.pr_num }}",
+# "commit_message": "expected sha value = ${{ github.event.inputs.pr_head_sha }}",
+# "sha":"${{ github.event.inputs.pr_head_sha }}"
+# }'
+    test-curl-action:
+        name: "Perform REST API"
+        runs-on: ubuntu-latest
+        steps:
+        -   name: "Call API"
+            uses: indiesdev/curl@v1.1
+            with:
+                # The target URL
+                # Required: true if custom-config is not set
+                url: https://cloud.mongodb.com
+
+                # The request method, basically it's one of GET|POST|PUT|PATCH
+                # Default is GET
+                method: "PATCH"
+
+                # List of response status codes to be accepted, else it will set the job to be failed
+                # If more than one value is needed, you can use comma(,) as seperator
+                # In this case if the response status code is not one of 200, 201 and 204, the job will be failed
+                # Default is 200,201,204
+                accept: 200,201,204
+
+                # Headers can be passed through json object string
+                headers: '{ "Content-Type": "application/json" }'
+
+                # Params can be passed through json object string
+                # params: '{ "param1": "value", "param2": "value2" }'
+
+                # Body request
+                # Apply only to POST|PUT request
+                body: |
+                    '{
+                        "name":"SEEHERE",
+                        "collectionName": "evault",
+                        "database": "fiserv",
+                        "mappings": { 
+                            "dynamic": false, 
+                            "fields": { 
+                                "email": { "type": "string" }, 
+                    
+                                "name_first": { "type": "string" }
+                                }
+                            },
+                        "analyzer": "lucene.standard",
+                        "synonyms": [
+                            {
+                                "name": "egSynonyms",
+                                "source": {
+                                    "collection": "synonyms"
+                                },
+                                "analyzer": "lucene.standard"
+                            }
+                        ]
+                    }'
+
+                # Request timeout (millisec)
+                # Default: 1000
+                timeout: 1000
+
+                # Basic authentication using username and password
+                # This will override the Authorization header, for example Authorization: Basic QWxhZGRpbjpPcGVuU2VzYW1l
+                # Format => username:password as base 64
+                # basic-auth-token: ${{ secrets.curl_auth_token }}
+
+                # The authentication using token
+                # This will override the Authorization header, for example Authorization: Bearer QWxhZGRpbjpPcGVuU2VzYW1l
+                # bearer-token: ${{ secrets.bearer_token }}
+
+                # If you want to use proxy with the request, you can use proxy-url
+                # Format => host:port
+                # proxy-url: https://proxy-url:3000
+
+                # If the proxy host requires the authentication, you can use proxy-auth to pass credentials
+                # Format => username:password as base64
+                # proxy-auth-token: ${{ secrets.proxy_auth_token }}
+                proxy-auth-token: xiddjeqt:8ea9b00d-f886-481d-9059-e729c4a4dae0
+
+                # If it is set to true, it will show the response log in the Github UI
+                # Default: false
+                log-response: true
+
+                # Retries specify the number of retry attemps before giving up.
+                # Default: 1
+                retries: 3
+
+                # If you want to use axios config directly, you can pass config file to the action
+                # The file is just basically a json file that has the same format as axios config https://github.com/axios/axios#request-config
+                # If this input is set, it will ignore other inputs that related to the config
+                # The path file is start from root directory of the repo
+                # custom-config: .github/workflows/curl-config.json
+                
+    # update-index:
+    #     runs-on: ubuntu-latest
+    #     steps:
+    #         -   name: grab existing indexes
+    #             run: |
+    #                 echo "list indexes"
+
+    #         -   name: update index
+    #             run: |
+    #                 curl --location --request PATCH 
+    #                 --url 'https://cloud.mongodb.com/api/atlas/v1.0/groups/62bc6cdd9ade1a4dfc109f54/clusters/sandbox/fts/indexes/6495c0eadcf4dc6655f45b1d' \
+    #                 --header 'authorization: Bearer ${{ secrets.GITHUB_TOKEN }}' \
+    #                 --header 'Content-Type: application/json' \
+    #                 --url https://api.github.com/repos/${{ github.repository }}/pulls/${{ github.event.inputs.pr_num }}/merge \
+    #                 --data '{
+    #                 "merge_method": "squash",
+    #                 "commit_title": "Squash and Merge for Pull Request ${{ github.event.inputs.pr_num }}",
+    #                 "commit_message": "expected sha value = ${{ github.event.inputs.pr_head_sha }}",
+    #                 "sha":"${{ github.event.inputs.pr_head_sha }}"
+    #                 }'
+
+    # prepare-files:
+    #     runs-on: ubuntu-latest
+    #     outputs:
+    #         matrix-added: ${{ steps.file-changes.outputs.files_added }}
+    #         matrix-modified: ${{ steps.file-changes.outputs.files_modified }}
+    #     steps:
+    #         -   id: file-changes
+    #             uses: trilom/file-changes-action@v1.2.4
+
+    # post-files-added:
+    #     needs: prepare-files
+    #     runs-on: ubuntu-latest
+    #     strategy:
+    #         matrix:
+    #             file: ${{ fromJSON(needs.prepare-files.outputs.matrix-added) }}
+    #     steps:
+    #         -   name: Checkout
+    #             uses: actions/checkout@v3
+
+    #         -   name: Echo file
+    #             run: |
+    #                 echo ${{ matrix.file }} # to test if the correct file was passed
+
+    #         -   name: Make an API call
+    #             uses: fjogeleit/http-request-action@v1
+    #             with:
+    #                 url: 'https://postman-echo.com/post'
+    #                 method: 'POST'
+    #                 file: "${{ github.workspace }}/${{ matrix.file }}"
+

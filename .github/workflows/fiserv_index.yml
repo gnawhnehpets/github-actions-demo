@@ -33,7 +33,7 @@ jobs:
             with:
                 # The target URL
                 # Required: true if custom-config is not set
-                url: https://cloud.mongodb.com
+                url: https://cloud.mongodb.com/api/atlas/v1.0/groups/62bc6cdd9ade1a4dfc109f54/clusters/sandbox/fts/indexes/6495c0eadcf4dc6655f45b1d
 
                 # The request method, basically it's one of GET|POST|PUT|PATCH
                 # Default is GET

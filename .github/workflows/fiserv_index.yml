@@ -62,6 +62,7 @@ jobs:
                             "dynamic": false, 
                             "fields": { 
                                 "email": { "type": "string" }, 
+                                "merch_id": { "type": "string" }, 
                     
                                 "name_first": { "type": "string" }
                                 }
